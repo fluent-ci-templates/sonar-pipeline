@@ -11,7 +11,7 @@ A ready-to-use CI/CD Pipeline for analyzing your code with [SonarCloud](https://
 Run the following command in your project:
 
 ```bash
-dagger run fluentci sonar_pipeline
+fluentci run sonar_pipeline
 ```
 
 Or, if you want to use it as a template:
