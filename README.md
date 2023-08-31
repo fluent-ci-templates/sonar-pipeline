@@ -32,11 +32,11 @@ dagger run fluentci .
 
 | Variable           | Description                                           | Required |
 | ------------------ | ----------------------------------------------------- | -------- |
-| SONAR_TOKEN        | SonarCloud token                                      | true     |
-| SONAR_ORGANIZATION | SonarCloud organization                               | true     |
-| SONAR_PROJECT_KEY  | SonarCloud project key                                | true     |
-| SONAR_HOST_URL     | SonarCloud host URL. Default: `https://sonarcloud.io` | false    |
-| SONAR_SOURCES      | SonarCloud sources. Default: `.`                      | false    |
+| SONAR_TOKEN        | SonarCloud token                                      | yes     |
+| SONAR_ORGANIZATION | SonarCloud organization                               | yes     |
+| SONAR_PROJECT_KEY  | SonarCloud project key                                | yes     |
+| SONAR_HOST_URL     | SonarCloud host URL. Default: `https://sonarcloud.io` | no    |
+| SONAR_SOURCES      | SonarCloud sources. Default: `.`                      | no    |
 
 ## Jobs
 
