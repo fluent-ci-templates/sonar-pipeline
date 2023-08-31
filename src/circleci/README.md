@@ -1,13 +1,14 @@
 # Circle CI
 
-[![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Fbase_pipeline&query=%24.version)](https://pkg.fluentci.io/base_pipeline)
+[![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Fsonar_pipeline&query=%24.version)](https://pkg.fluentci.io/sonar_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/sonar-pipeline)](https://codecov.io/gh/fluent-ci-templates/sonar-pipeline)
 
 
 The following command will generate a `.circleci/config.yml` file in your project:
 
 ```bash
-fluentci cci init
+fluentci cci init -t sonar_pipeline
 ```
 
 Generated file:
@@ -17,7 +18,7 @@ Generated file:
 
 version: 2.1
 jobs:
-  base:
+  analyze:
     steps:
       - checkout
       - run: sudo apt-get update && sudo apt-get install -y curl unzip
@@ -32,13 +33,13 @@ jobs:
           dagger version
       - run:
           name: Run Dagger Pipelines
-          command: dagger run fluentci .
+          command: fluentci run sonar_pipeline
     machine:
       image: ubuntu-2004:2023.07.1
 workflows:
   dagger:
     jobs:
-      - base
+      - analyze
 
 ```
 

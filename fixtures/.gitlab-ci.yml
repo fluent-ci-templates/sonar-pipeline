@@ -21,8 +21,8 @@
     - mv bin/dagger /usr/local/bin
     - dagger version
 
-base:
+analyze:
   extends: .dagger
   script:
-    - dagger run fluentci .
+    - fluentci run sonar_pipeline
 
