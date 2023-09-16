@@ -1,8 +1,10 @@
-import Client from "@dagger.io/dagger";
+import Client from "@fluentci.io/dagger";
 
 export enum Job {
   analyze = "analyze",
 }
+
+export const exclude = [];
 
 export const analyze = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
