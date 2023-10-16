@@ -1,0 +1,11 @@
+{
+  sonar {
+    analyze(
+      src: "."
+      organization: "tsirysndr"
+      token: "SONAR_TOKEN"
+      projectKey: "sonar-example"
+      sources: "src,copybooks"
+    )
+  }
+}

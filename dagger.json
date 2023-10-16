@@ -1,0 +1,5 @@
+{
+  "root": "",
+  "name": "sonar",
+  "sdkRuntime": "tsiry/dagger-sdk-deno"
+}
