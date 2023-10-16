@@ -8,8 +8,8 @@ export const exclude = [];
 
 export const analyze = async (
   src = ".",
-  organization?: string,
   token?: string,
+  organization?: string,
   projectKey?: string,
   sources?: string
 ) => {
