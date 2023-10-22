@@ -44,19 +44,22 @@ fluentci run .
 | --------- | ---------------------------------------- |
 | analyze   | Run SonarScanner and push to SonarCloud. |
 
+```graphql
+analyze(
+  organization: String!, 
+  projectKey: String!, 
+  sources: String!, 
+  src: String!, 
+  token: String!
+): String
+```
+
 ## Programmatic usage
 
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.9/mod.ts";
-import { analyze } from "https://pkg.fluentci.io/sonar_pipeline@v0.2.1/mod.ts";
+import { analyze } from "https://pkg.fluentci.io/sonar_pipeline@v0.3.0/mod.ts";
 
-function pipeline(src = ".") {
-  connect(async (client: Client) => {
-    await analyze(client, src);
-  });
-}
-
-pipeline();
+await analyze();
 ```
