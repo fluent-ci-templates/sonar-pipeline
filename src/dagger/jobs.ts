@@ -38,7 +38,7 @@ export const analyze = async (
     const ctr = client
       .pipeline(Job.analyze)
       .container()
-      .from("ghcr.io/fluent-ci-templates/sonar-scanner:latest")
+      .from("ghcr.io/fluentci-io/sonar-scanner:latest")
       .withEnvVariable("SONAR_TOKEN", sonarToken)
       .withDirectory("/app", context)
       .withWorkdir("/app")
