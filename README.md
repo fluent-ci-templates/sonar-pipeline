@@ -44,6 +44,16 @@ fluentci run .
 | --------- | ---------------------------------------- |
 | analyze   | Run SonarScanner and push to SonarCloud. |
 
+```graphql
+analyze(
+  organization: String!, 
+  projectKey: String!, 
+  sources: String!, 
+  src: String!, 
+  token: String!
+): String
+```
+
 ## Programmatic usage
 
 You can also use this pipeline programmatically:
