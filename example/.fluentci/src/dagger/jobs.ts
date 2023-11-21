@@ -1,4 +1,6 @@
-import Client, { connect } from "../../deps.ts";
+import Client, { Directory } from "../../deps.ts";
+import { connect } from "../../sdk/connect.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   analyze = "analyze",
@@ -7,14 +9,14 @@ export enum Job {
 export const exclude = [];
 
 export const analyze = async (
-  src = ".",
+  src: string | Directory | undefined = ".",
   token?: string,
   organization?: string,
   projectKey?: string,
   sources?: string
 ) => {
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const sonarToken = Deno.env.get("SONAR_TOKEN") || token;
     const sonarHostUrl =
       Deno.env.get("SONAR_HOST_URL") || "https://sonarcloud.io";
@@ -52,9 +54,7 @@ export const analyze = async (
       -Dsonar.host.url=${sonarHostUrl}`,
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
   });
   return "done";
 };
