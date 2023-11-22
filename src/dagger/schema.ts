@@ -42,6 +42,7 @@ const schema = makeSchema({
 
 schema.description = JSON.stringify({
   "analyze.src": "directory",
+  "analyze.token": "secret",
 });
 
 export { schema };

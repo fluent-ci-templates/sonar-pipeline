@@ -1,6 +1,6 @@
-import Client, { Directory } from "../../deps.ts";
+import Client, { Directory, Secret } from "../../deps.ts";
 import { connect } from "../../sdk/connect.ts";
-import { getDirectory } from "./lib.ts";
+import { getDirectory, getSonarToken } from "./lib.ts";
 
 export enum Job {
   analyze = "analyze",
@@ -10,7 +10,7 @@ export const exclude = [];
 
 export const analyze = async (
   src: string | Directory | undefined = ".",
-  token?: string,
+  token?: string | Secret,
   organization?: string,
   projectKey?: string,
   sources?: string
@@ -24,24 +24,28 @@ export const analyze = async (
       Deno.env.get("SONAR_ORGANIZATION") || organization;
     const sonarProjectKey = Deno.env.get("SONAR_PROJECT_KEY") || projectKey;
     const sonarSources = Deno.env.get("SONAR_SOURCES") || sources || ".";
+    const secret = getSonarToken(client, sonarToken);
 
-    if (!sonarToken) {
-      throw new Error("SONAR_TOKEN is not set");
+    if (!secret) {
+      console.log("SONAR_TOKEN is not set");
+      Deno.exit(1);
     }
 
     if (!sonarOrganization) {
-      throw new Error("SONAR_ORGANIZATION is not set");
+      console.log("SONAR_ORGANIZATION is not set");
+      Deno.exit(1);
     }
 
     if (!sonarProjectKey) {
-      throw new Error("SONAR_PROJECT_KEY is not set");
+      console.log("SONAR_PROJECT_KEY is not set");
+      Deno.exit(1);
     }
 
     const ctr = client
       .pipeline(Job.analyze)
       .container()
       .from("ghcr.io/fluentci-io/sonar-scanner:latest")
-      .withEnvVariable("SONAR_TOKEN", sonarToken)
+      .withSecretVariable("SONAR_TOKEN", secret)
       .withDirectory("/app", context)
       .withWorkdir("/app")
       .withExec([
