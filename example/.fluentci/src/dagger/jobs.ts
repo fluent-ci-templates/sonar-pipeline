@@ -8,13 +8,21 @@ export enum Job {
 
 export const exclude = [];
 
-export const analyze = async (
-  src: string | Directory | undefined = ".",
-  token?: string | Secret,
+/**
+ * @function
+ * @description Run sonar scanner
+ * @param {string | Directory} src
+ * @param {string | Secret} token
+ * @param {string} organization
+ * @returns {number}
+ */
+export async function analyze(
+  src: string | Directory,
+  token: string | Secret,
   organization?: string,
   projectKey?: string,
   sources?: string
-) => {
+): Promise<string> {
   await connect(async (client: Client) => {
     const context = getDirectory(client, src);
     const sonarToken = Deno.env.get("SONAR_TOKEN") || token;
@@ -61,17 +69,15 @@ export const analyze = async (
     await ctr.stdout();
   });
   return "done";
-};
+}
 
-export type JobExec = (src?: string) =>
-  | Promise<string>
-  | ((
-      client: Client,
-      src?: string,
-      options?: {
-        ignore: string[];
-      }
-    ) => Promise<string>);
+export type JobExec = (
+  src: string,
+  token: string,
+  organization?: string,
+  projectKey?: string,
+  sources?: string
+) => Promise<string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.analyze]: analyze,
