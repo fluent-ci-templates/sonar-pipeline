@@ -23,6 +23,7 @@ export async function analyze(
   projectKey?: string,
   sources?: string
 ): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
     const context = getDirectory(client, src);
     const sonarToken = Deno.env.get("SONAR_TOKEN") || token;
@@ -66,9 +67,9 @@ export async function analyze(
       -Dsonar.host.url=${sonarHostUrl}`,
       ]);
 
-    await ctr.stdout();
+    result = await ctr.stdout();
   });
-  return "done";
+  return result;
 }
 
 export type JobExec = (

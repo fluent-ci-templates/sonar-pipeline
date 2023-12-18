@@ -52,14 +52,14 @@ dagger mod install github.com/fluent-ci-templates/sonar-pipeline@mod
 | --------- | ---------------------------------------- |
 | analyze   | Run SonarScanner and push to SonarCloud. |
 
-```graphql
+```typescript
 analyze(
-  organization: String!, 
-  projectKey: String!, 
-  sources: String!, 
-  src: String!, 
-  token: String!
-): String
+  src: string | Directory,
+  token: string | Secret,
+  organization?: string,
+  projectKey?: string,
+  sources?: string
+): Promise<string>
 ```
 
 ## Programmatic usage
@@ -67,7 +67,7 @@ analyze(
 You can also use this pipeline programmatically:
 
 ```ts
-import { analyze } from "https://pkg.fluentci.io/sonar_pipeline@v0.3.2/mod.ts";
+import { analyze } from "https://pkg.fluentci.io/sonar_pipeline@v0.4.0/mod.ts";
 
 await analyze();
 ```
