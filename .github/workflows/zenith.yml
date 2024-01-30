@@ -10,10 +10,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Dagger Zenith
         run: |
-          curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.9.3 sh
+          curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.9.7 sh
           sudo mv bin/dagger /usr/local/bin
           dagger version
       - name: Setup Sonar Token
@@ -23,5 +23,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Run Dagger Pipelines
         run: |
-          dagger query --doc analyze.gql
+          dagger call analyze --src . --token SONAR_TOKEN --organization tsirysndr --project-key sonar-example --sources src,copybooks
         working-directory: example
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
