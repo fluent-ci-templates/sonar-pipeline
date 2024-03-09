@@ -1,4 +1,8 @@
-import { Directory, Secret, dag } from "../../deps.ts";
+/**
+ * @module sonar
+ * @description This module provides a function for analyzing code with sonar scanner
+ */
+import { Directory, Secret, dag, env, exit } from "../../deps.ts";
 import { getDirectory, getSonarToken } from "./lib.ts";
 
 export enum Job {
@@ -8,6 +12,8 @@ export enum Job {
 export const exclude = [];
 
 /**
+ * Run sonar scanner
+ *
  * @function
  * @description Run sonar scanner
  * @param {string | Directory} src
@@ -22,49 +28,50 @@ export async function analyze(
   projectKey?: string,
   sources?: string
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
-  const sonarToken = Deno.env.get("SONAR_TOKEN") || token;
-  const sonarHostUrl =
-    Deno.env.get("SONAR_HOST_URL") || "https://sonarcloud.io";
-  const sonarOrganization = Deno.env.get("SONAR_ORGANIZATION") || organization;
-  const sonarProjectKey = Deno.env.get("SONAR_PROJECT_KEY") || projectKey;
-  const sonarSources = Deno.env.get("SONAR_SOURCES") || sources || ".";
-  const secret = await getSonarToken(dag, sonarToken);
+  const context = await getDirectory(src);
+  const sonarToken = env.get("SONAR_TOKEN") || token;
+  const sonarHostUrl = env.get("SONAR_HOST_URL") || "https://sonarcloud.io";
+  const sonarOrganization = env.get("SONAR_ORGANIZATION") || organization;
+  const sonarProjectKey = env.get("SONAR_PROJECT_KEY") || projectKey;
+  const sonarSources = env.get("SONAR_SOURCES") || sources || ".";
+  const secret = await getSonarToken(sonarToken);
 
   if (!secret) {
-    console.log("SONAR_TOKEN is not set");
-    Deno.exit(1);
+    console.error("SONAR_TOKEN is not set");
+    exit(1);
+    return "";
   }
 
   if (!sonarOrganization) {
-    console.log("SONAR_ORGANIZATION is not set");
-    Deno.exit(1);
+    console.error("SONAR_ORGANIZATION is not set");
+    exit(1);
+    return "";
   }
 
   if (!sonarProjectKey) {
-    console.log("SONAR_PROJECT_KEY is not set");
-    Deno.exit(1);
+    console.error("SONAR_PROJECT_KEY is not set");
+    exit(1);
+    return "";
   }
 
   const ctr = dag
     .pipeline(Job.analyze)
     .container()
-    .from("ghcr.io/fluentci-io/sonar-scanner:latest")
+    .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("pkgx-cache"))
+    .withExec(["pkgx", "install", "sonar-scanner"])
     .withSecretVariable("SONAR_TOKEN", secret)
     .withDirectory("/app", context)
     .withWorkdir("/app")
     .withExec([
-      "sh",
-      "-c",
-      `eval "$(devbox global shellenv)" && \
-      sonar-scanner -Dsonar.organization=${sonarOrganization} \
-      -Dsonar.projectKey=${sonarProjectKey} \
-      -Dsonar.sources=${sonarSources} \
-      -Dsonar.host.url=${sonarHostUrl}`,
+      "sonar-scanner",
+      `-Dsonar.organization=${sonarOrganization}`,
+      `-Dsonar.projectKey=${sonarProjectKey}`,
+      `-Dsonar.sources=${sonarSources}`,
+      `-Dsonar.host.url=${sonarHostUrl}`,
     ]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 export type JobExec = (

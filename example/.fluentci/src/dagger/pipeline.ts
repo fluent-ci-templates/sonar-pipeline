@@ -1,3 +1,4 @@
+import { env } from "../../deps.ts";
 import * as jobs from "./jobs.ts";
 
 const { analyze, runnableJobs } = jobs;
@@ -8,7 +9,7 @@ export default async function pipeline(src = ".", args: string[] = []) {
     return;
   }
 
-  await analyze(src, Deno.env.get("SONAR_TOKEN")!);
+  await analyze(src, env.get("SONAR_TOKEN")!);
 }
 
 async function runSpecificJobs(src: string, args: jobs.Job[]) {
@@ -17,6 +18,6 @@ async function runSpecificJobs(src: string, args: jobs.Job[]) {
     if (!job) {
       throw new Error(`Job ${name} not found`);
     }
-    await job(src, Deno.env.get("SONAR_TOKEN")!);
+    await job(src, env.get("SONAR_TOKEN")!);
   }
 }
