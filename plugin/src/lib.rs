@@ -19,6 +19,10 @@ pub fn analyze(args: String) -> FnResult<String> {
             "pkgx",
             "+sonarqube.org/sonarscanner",
             "sonar-scanner",
+            "-Dsonar.organization=$SONAR_ORGANIZATION",
+            "-Dsonar.projectKey=$SONAR_PROJECT_KEY",
+            "-Dsonar.sources=$SONAR_SOURCES",
+            "-Dsonar.host.url=$SONAR_HOST_URL",
             &args,
         ])?
         .stdout()?;

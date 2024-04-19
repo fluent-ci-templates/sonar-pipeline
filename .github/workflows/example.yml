@@ -13,8 +13,7 @@ jobs:
         with:
           wasm: true
           pipeline: .
-          args: |
-            analyze -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=${SONAR_SOURCES} -Dsonar.host.url=${SONAR_HOST_URL}
+          args: analyze
           working-directory: example
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
