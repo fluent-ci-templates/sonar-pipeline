@@ -8,11 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: denolib/setup-deno@v2
-        with:
-          deno-version: v1.41
       - name: Setup Fluent CI CLI
-        run: deno install -A -r https://cli.fluentci.io -n fluentci
+        uses: fluentci-io/setup-fluentci@v5
+        with:
+          wasm: true
+          pipeline: .
+          args: |
+            analyze -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=${SONAR_SOURCES} -Dsonar.host.url=${SONAR_HOST_URL}
+          working-directory: example
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: tsirysndr
+          SONAR_PROJECT_KEY: sonar-example
+          SONAR_SOURCES: src,copybooks
+          SONAR_HOST_URL: https://sonarcloud.io
       - name: Setup Dagger
         run: |
           curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.10.0 sh
